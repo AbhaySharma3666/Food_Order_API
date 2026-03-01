@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: foodiesapi
+
+# MongoDB configuration
+  mongodb:
+    uri: mongodb+srv://abhaysharma20dec_db_user:foodiesapi@cluster-foodiesapi.8tl2xuh.mongodb.net/?appName=Cluster-foodiesapi
+
