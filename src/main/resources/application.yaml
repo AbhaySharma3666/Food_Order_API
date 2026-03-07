@@ -12,3 +12,5 @@ aws:
     secret:
       key: ${AWS_SECRET_ACCESS_KEY}
   region: ap-south-1
+  s3:
+    bucket: ${S3_BUCKET_NAME}
