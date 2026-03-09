@@ -4,13 +4,14 @@ spring:
 
 # MongoDB configuration
   mongodb:
-    uri: ${MONGODB_URI}
+#    uri: ${MONGODB_URI}
+    uri: mongodb+srv://foodiesUN:foodiesUN@cluster0.hbk79vd.mongodb.net/Cluster0?appName=Cluster0
 
 aws:
   access:
     key: ${AWS_ACCESS_KEY_ID}
-    secret:
-      key: ${AWS_SECRET_ACCESS_KEY}
-  region: ap-south-1
+  secret:
+    key: ${AWS_SECRET_ACCESS_KEY}
+  region: ${AWS_REGION_NAME}
   s3:
     bucket: ${S3_BUCKET_NAME}
