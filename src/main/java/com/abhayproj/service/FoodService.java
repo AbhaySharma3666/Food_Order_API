@@ -8,5 +8,6 @@ public interface FoodService {
 
     String uploadFile(MultipartFile file);
 
-    FoodResponse addFood(FoodRequest request, MultipartFile file);
+    FoodResponse
+    addFood(FoodRequest request, MultipartFile file);
 }
