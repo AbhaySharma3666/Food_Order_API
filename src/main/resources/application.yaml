@@ -4,9 +4,9 @@ spring:
 
 # MongoDB configuration
   mongodb:
-#    uri: ${MONGODB_URI}
-    uri: mongodb+srv://foodiesUN:foodiesUN@cluster0.hbk79vd.mongodb.net/Cluster0?appName=Cluster0
+    uri: ${MONGODB_URI}
 
+# AWS Configuration
 aws:
   access:
     key: ${AWS_ACCESS_KEY_ID}
