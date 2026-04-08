@@ -5,6 +5,7 @@ import com.abhayproj.io.UserRequest;
 import com.abhayproj.io.UserResponse;
 import com.abhayproj.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponse registerUser(UserRequest request) {
@@ -24,7 +26,7 @@ public class UserServiceImpl implements UserService {
         return UserEntity.builder()
                 .name(request.getName())
                 .email(request.getEmail())
-                .password(request.getPassword())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .build();
     }
 
