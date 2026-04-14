@@ -22,7 +22,8 @@ public class CartServiceImpl implements CartService{
     public CartResponse addToCart(CartRequest request) {
         String loggedInUserId = userService.findByUserId();
         Optional<CartEntity> cartOptional = cardRepository.findByUserId(loggedInUserId);
-        CartEntity cart = cartOptional.orElseGet(()->new CartEntity(loggedInUserId, new HashMap<>()));
+
+        CartEntity cart = cartOptional.orElseGet(() -> new CartEntity(null, loggedInUserId, new HashMap<>()));
         Map<String, Integer> cartItems = cart.getItems();
         cartItems.put(request.getFoodId(), cartItems.getOrDefault(request.getFoodId(), 0) + 1);
         cart.setItems(cartItems);
@@ -68,6 +69,5 @@ public class CartServiceImpl implements CartService{
                 .userId(cartEntity.getUserId())
                 .items(cartEntity.getItems())
                 .build();
-
     }
 }

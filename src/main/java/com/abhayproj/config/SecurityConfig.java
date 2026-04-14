@@ -41,7 +41,9 @@ public class SecurityConfig {
                         auth -> auth.requestMatchers(
                                 "/api/register",
                                 "/api/login",
-                                "/api/foods/**"
+                                "/api/foods/**",
+                                "/api/orders/all",
+                                "/api/orders/status/**"
                         ).permitAll().anyRequest().authenticated()
                 )
                 .sessionManagement(
@@ -67,7 +69,8 @@ public class SecurityConfig {
         config.setAllowedOrigins(
                 List.of(
                         "http://localhost:5137",
-                        "http://localhost:5174"
+                        "http://localhost:5174",
+                        "http://localhost:5173"
                 )
         );
         config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS","PATCH"));

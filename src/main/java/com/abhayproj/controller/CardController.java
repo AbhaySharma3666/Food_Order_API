@@ -4,12 +4,8 @@ import com.abhayproj.io.CartRequest;
 import com.abhayproj.io.CartResponse;
 import com.abhayproj.service.CartService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/cart")
