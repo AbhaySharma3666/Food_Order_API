@@ -29,6 +29,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String requestURI = request.getRequestURI();
+        if (requestURI.contains("/api/register") ||
+                requestURI.contains("/api/login") ||
+                requestURI.contains("/api/foods") ||
+                requestURI.contains("/api/orders/all") ||
+                requestURI.contains("/api/orders/status")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         final String authHeader = request.getHeader("Authorization");
         if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
@@ -42,8 +52,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             null,
                             userDetails.getAuthorities()
                     );
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    authToken.setDetails(new
+                            WebAuthenticationDetailsSource()
+                            .buildDetails(request));
+                    SecurityContextHolder.getContext()
+                            .setAuthentication(authToken);
                 }
                 else {
                     System.out.println("not valid token");

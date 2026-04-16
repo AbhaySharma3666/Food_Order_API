@@ -43,7 +43,9 @@ public class SecurityConfig {
                                 "/api/login",
                                 "/api/foods/**",
                                 "/api/orders/all",
-                                "/api/orders/status/**"
+                                "/api/orders/**",
+                                "/api/orders/status/**",
+                                "/api/orders/verify"
                         ).permitAll().anyRequest().authenticated()
                 )
                 .sessionManagement(

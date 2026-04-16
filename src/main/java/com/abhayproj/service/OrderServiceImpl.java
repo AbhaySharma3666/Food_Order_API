@@ -54,7 +54,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public void verifyPayment(Map<String, String> paymentData, String status) {
-        String razorpayOrderId = paymentData.get("razopay_order_id");
+        String razorpayOrderId = paymentData.get("razorpay_order_id");
         OrderEntity existingOrder = orderRepository.findByRazorpayOrderId(razorpayOrderId)
                 .orElseThrow(() -> new RuntimeException("Order not found with Razorpay Order ID "));
         existingOrder.setPaymentStatus(status);

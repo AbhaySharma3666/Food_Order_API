@@ -24,7 +24,7 @@ public class OrderController {
         return response;
     }
 
-    @GetMapping("/verify")
+    @PostMapping("/verify")
     public void verifyPayment(@RequestBody Map<String, String> paymentData){
         orderService.verifyPayment(paymentData, "Paid");
     }
