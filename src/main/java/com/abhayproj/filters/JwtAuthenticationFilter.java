@@ -35,7 +35,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 requestURI.contains("/api/foods") ||
                 requestURI.contains("/api/orders/all") ||
                 requestURI.contains("/api/orders/status") ||
-                requestURI.contains("/api/cart")) {
+                requestURI.contains("/api/cart")
+        ) {
             filterChain.doFilter(request, response);
             return;
         }
