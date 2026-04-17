@@ -16,7 +16,7 @@ aws:
   s3:
     bucket: ${S3_BUCKET_NAME}
 
-jwt.secret.key: &{JWT_SECRET_KEY}
+jwt.secret.key: ${JWT_SECRET_KEY}
 
 # Razorpay Configuration
 razorpay:
