@@ -73,7 +73,8 @@ public class SecurityConfig {
                         "http://localhost:5137",
                         "http://localhost:5174",
                         "http://localhost:5173",
-                        "https://foodies-panel.vercel.app"
+                        "https://foodies-panel.vercel.app",
+                        "https://foodies-adminpanel.vercel.app"
                 )
         );
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
