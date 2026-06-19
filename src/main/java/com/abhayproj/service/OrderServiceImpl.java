@@ -1,44 +1,37 @@
 package com.abhayproj.service;
 
 import com.abhayproj.entity.OrderEntity;
-import com.abhayproj.io.OrderResponse;
-import com.abhayproj.io.OrderRequest;
-import com.abhayproj.repository.CardRepository;
+import com.abhayproj.dto.OrderResponse;
+import com.abhayproj.dto.OrderRequest;
+import com.abhayproj.exception.ResourceNotFoundException;
+import com.abhayproj.repository.CartRepository;
 import com.abhayproj.repository.OrderRepository;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Service
-public class OrderServiceImpl implements OrderService{
+@RequiredArgsConstructor
+public class OrderServiceImpl implements OrderService {
 
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private CardRepository cardRepository;
-
-
-    @Value("${razorpay.key}")
-    private String RAZORPAY_KEY;
-    @Value("${razorpay.secret}")
-    private String RAZORPAY_SECRET;
+    private final OrderRepository orderRepository;
+    private final UserService userService;
+    private final CartRepository cartRepository;
+    private final RazorpayClient razorpayClient;
 
     @Override
     public OrderResponse createOrderWithPayment(OrderRequest request) throws RazorpayException {
         OrderEntity newOrder = convertToEntity(request);
         newOrder = orderRepository.save(newOrder);
 
-        RazorpayClient razorpayClient = new RazorpayClient(RAZORPAY_KEY, RAZORPAY_SECRET);
         JSONObject orderRequest = new JSONObject();
         orderRequest.put("amount", newOrder.getAmount() * 100);
         orderRequest.put("currency", "INR");
@@ -46,8 +39,9 @@ public class OrderServiceImpl implements OrderService{
 
         Order razorpayOrder = razorpayClient.orders.create(orderRequest);
         newOrder.setRazorpayOrderId(razorpayOrder.get("id").toString());
-        String loggrdInUserId = userService.findByUserId();
-        newOrder.setUserId(loggrdInUserId);
+
+        String loggedInUserId = userService.findByUserId();
+        newOrder.setUserId(loggedInUserId);
         newOrder = orderRepository.save(newOrder);
         return convertToResponse(newOrder);
     }
@@ -56,41 +50,45 @@ public class OrderServiceImpl implements OrderService{
     public void verifyPayment(Map<String, String> paymentData, String status) {
         String razorpayOrderId = paymentData.get("razorpay_order_id");
         OrderEntity existingOrder = orderRepository.findByRazorpayOrderId(razorpayOrderId)
-                .orElseThrow(() -> new RuntimeException("Order not found with Razorpay Order ID "));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Order", "razorpayOrderId", razorpayOrderId));
+
         existingOrder.setPaymentStatus(status);
         existingOrder.setRazorpaySignature(paymentData.get("razorpay_signature"));
         existingOrder.setRazorpayPaymentId(paymentData.get("razorpay_payment_id"));
         orderRepository.save(existingOrder);
-        if ("paid".equalsIgnoreCase(status)){
-            cardRepository.deleteByUserId(existingOrder.getUserId());
+
+        if ("paid".equalsIgnoreCase(status)) {
+            cartRepository.deleteByUserId(existingOrder.getUserId());
         }
     }
 
     @Override
     public List<OrderResponse> getUserOrders() {
         String loggedInUserId = userService.findByUserId();
-        List<OrderEntity> list = orderRepository.findByUserId(loggedInUserId);
-        return list.stream().map(entity-> convertToResponse(entity)).collect(Collectors.toList());
+        return orderRepository.findByUserId(loggedInUserId).stream()
+                .map(this::convertToResponse)
+                .toList();
     }
 
     @Override
-    public void removeOrder(String OrderId) {
-        orderRepository.deleteById(OrderId);
+    public void removeOrder(String orderId) {
+        orderRepository.deleteById(orderId);
     }
 
     @Override
     public void updateOrderStatus(String orderId, String status) {
         OrderEntity entity = orderRepository.findById(orderId)
-                .orElseThrow(()-> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
         entity.setOrderStatus(status);
         orderRepository.save(entity);
     }
 
     @Override
     public List<OrderResponse> getOrderOfAllUsers() {
-        List<OrderEntity> list = orderRepository.findAll();
-        return
-                list.stream().map(entity -> convertToResponse(entity)).collect(Collectors.toList());
+        return orderRepository.findAll().stream()
+                .map(this::convertToResponse)
+                .toList();
     }
 
     private OrderResponse convertToResponse(OrderEntity newOrder) {
@@ -108,7 +106,7 @@ public class OrderServiceImpl implements OrderService{
                 .build();
     }
 
-    private OrderEntity convertToEntity(OrderRequest request){
+    private OrderEntity convertToEntity(OrderRequest request) {
         return OrderEntity.builder()
                 .userAddress(request.getUserAddress())
                 .amount(request.getAmount())

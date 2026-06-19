@@ -1,4 +1,4 @@
-package com.abhayproj.service;
+package com.abhayproj.security;
 
 import org.springframework.security.core.Authentication;
 

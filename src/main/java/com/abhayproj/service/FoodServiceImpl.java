@@ -1,10 +1,12 @@
 package com.abhayproj.service;
 
 import com.abhayproj.entity.FoodEntity;
-import com.abhayproj.io.FoodRequest;
-import com.abhayproj.io.FoodResponse;
+import com.abhayproj.dto.FoodRequest;
+import com.abhayproj.dto.FoodResponse;
+import com.abhayproj.exception.ResourceNotFoundException;
 import com.abhayproj.repository.FoodRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,24 +21,24 @@ import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Service
-public class FoodServiceImpl implements FoodService{
+@RequiredArgsConstructor
+public class FoodServiceImpl implements FoodService {
 
-    @Autowired
-    private S3Client s3Client;
-
-    @Autowired
-    private FoodRepository foodRepository;
+    private final S3Client s3Client;
+    private final FoodRepository foodRepository;
 
     @Value("${aws.s3.bucket}")
     private String bucketName;
 
     @Override
     public String uploadFile(MultipartFile file) {
-        String filenameExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
-        String key = UUID.randomUUID().toString() + "." + filenameExtension;
+        String filenameExtension = file.getOriginalFilename()
+                .substring(file.getOriginalFilename().lastIndexOf(".") + 1);
+        String key = UUID.randomUUID() + "." + filenameExtension;
+
         try {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
@@ -45,15 +47,19 @@ public class FoodServiceImpl implements FoodService{
                     .contentType(file.getContentType())
                     .build();
 
-            PutObjectResponse response = s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
+            PutObjectResponse response = s3Client.putObject(
+                    putObjectRequest, RequestBody.fromBytes(file.getBytes()));
 
             if (response.sdkHttpResponse().isSuccessful()) {
                 return "https://" + bucketName + ".s3.amazonaws.com/" + key;
             } else {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "File upload Failed");
+                throw new ResponseStatusException(
+                        HttpStatus.INTERNAL_SERVER_ERROR, "File upload failed");
             }
         } catch (IOException ex) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occured while uploading the file");
+            log.error("Error uploading file to S3", ex);
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while uploading the file");
         }
     }
 
@@ -68,17 +74,15 @@ public class FoodServiceImpl implements FoodService{
 
     @Override
     public List<FoodResponse> readFoods() {
-        List<FoodEntity> databasesEntries = foodRepository.findAll();
-        return databasesEntries
-                .stream()
-                .map(object -> convertToResponse(object))
-                .collect(Collectors.toList());
+        return foodRepository.findAll().stream()
+                .map(this::convertToResponse)
+                .toList();
     }
 
     @Override
     public FoodResponse readFood(String id) {
-        FoodEntity existingFood = foodRepository
-                .findById(id).orElseThrow(() -> new RuntimeException("Food not found with id: " + id));
+        FoodEntity existingFood = foodRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Food", "id", id));
         return convertToResponse(existingFood);
     }
 
@@ -98,10 +102,12 @@ public class FoodServiceImpl implements FoodService{
         String imageUrl = response.getImageUrl();
         String filename = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
         boolean isFileDeleted = deleteFile(filename);
-        if(isFileDeleted) foodRepository.deleteById(response.getId());
+        if (isFileDeleted) {
+            foodRepository.deleteById(response.getId());
+        }
     }
 
-    private FoodEntity convertToEntity(FoodRequest request){
+    private FoodEntity convertToEntity(FoodRequest request) {
         return FoodEntity.builder()
                 .name(request.getName())
                 .description(request.getDescription())
@@ -110,7 +116,7 @@ public class FoodServiceImpl implements FoodService{
                 .build();
     }
 
-    private FoodResponse convertToResponse(FoodEntity entity){
+    private FoodResponse convertToResponse(FoodEntity entity) {
         return FoodResponse.builder()
                 .id(entity.getId())
                 .name(entity.getName())

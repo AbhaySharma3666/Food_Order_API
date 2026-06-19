@@ -1,4 +1,4 @@
-package com.abhayproj.io;
+package com.abhayproj.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,5 +8,4 @@ import lombok.Getter;
 public class AuthenticationResponse {
     private String email;
     private String token;
-
 }

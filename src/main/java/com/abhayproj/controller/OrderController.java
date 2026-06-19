@@ -1,9 +1,10 @@
 package com.abhayproj.controller;
 
-import com.abhayproj.io.OrderRequest;
-import com.abhayproj.io.OrderResponse;
+import com.abhayproj.dto.OrderRequest;
+import com.abhayproj.dto.OrderResponse;
 import com.abhayproj.service.OrderService;
 import com.razorpay.RazorpayException;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,40 +16,38 @@ import java.util.Map;
 @RequestMapping("/api/orders")
 @AllArgsConstructor
 public class OrderController {
+
     private final OrderService orderService;
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderResponse createOrderWithPayment(@RequestBody OrderRequest request) throws RazorpayException {
-        OrderResponse response = orderService.createOrderWithPayment(request);
-        return response;
+    public OrderResponse createOrderWithPayment(@Valid @RequestBody OrderRequest request) throws RazorpayException {
+        return orderService.createOrderWithPayment(request);
     }
 
     @PostMapping("/verify")
-    public void verifyPayment(@RequestBody Map<String, String> paymentData){
+    public void verifyPayment(@RequestBody Map<String, String> paymentData) {
         orderService.verifyPayment(paymentData, "Paid");
     }
 
     @GetMapping
-    public List<OrderResponse> getOrders(){
+    public List<OrderResponse> getOrders() {
         return orderService.getUserOrders();
     }
 
     @DeleteMapping("/{orderId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteOrder(@PathVariable String orderId){
+    public void deleteOrder(@PathVariable String orderId) {
         orderService.removeOrder(orderId);
     }
 
     @GetMapping("/all")
-    public List<OrderResponse> getOrdersOfAllUsers(){
+    public List<OrderResponse> getOrdersOfAllUsers() {
         return orderService.getOrderOfAllUsers();
     }
 
     @PatchMapping("/status/{orderId}")
-    public void updateOrderStatus(@PathVariable String orderId, @RequestParam String status){
+    public void updateOrderStatus(@PathVariable String orderId, @RequestParam String status) {
         orderService.updateOrderStatus(orderId, status);
     }
 }
-
-

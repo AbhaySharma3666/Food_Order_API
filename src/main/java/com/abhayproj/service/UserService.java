@@ -1,7 +1,7 @@
 package com.abhayproj.service;
 
-import com.abhayproj.io.UserRequest;
-import com.abhayproj.io.UserResponse;
+import com.abhayproj.dto.UserRequest;
+import com.abhayproj.dto.UserResponse;
 
 public interface UserService {
 

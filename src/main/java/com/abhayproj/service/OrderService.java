@@ -1,7 +1,7 @@
 package com.abhayproj.service;
 
-import com.abhayproj.io.OrderResponse;
-import com.abhayproj.io.OrderRequest;
+import com.abhayproj.dto.OrderResponse;
+import com.abhayproj.dto.OrderRequest;
 import com.razorpay.RazorpayException;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public interface OrderService {
 
     List<OrderResponse> getUserOrders();
 
-    void removeOrder(String OrderId);
+    void removeOrder(String orderId);
 
     List<OrderResponse> getOrderOfAllUsers();
 

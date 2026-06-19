@@ -1,7 +1,7 @@
 package com.abhayproj.service;
 
-import com.abhayproj.io.CartRequest;
-import com.abhayproj.io.CartResponse;
+import com.abhayproj.dto.CartRequest;
+import com.abhayproj.dto.CartResponse;
 
 public interface CartService {
 

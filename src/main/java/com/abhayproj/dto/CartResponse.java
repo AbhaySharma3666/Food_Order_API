@@ -1,4 +1,4 @@
-package com.abhayproj.io;
+package com.abhayproj.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

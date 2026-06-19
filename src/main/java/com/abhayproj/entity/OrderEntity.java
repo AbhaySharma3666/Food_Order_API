@@ -1,6 +1,6 @@
 package com.abhayproj.entity;
 
-import com.abhayproj.io.OrderItem;
+import com.abhayproj.dto.OrderItem;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;

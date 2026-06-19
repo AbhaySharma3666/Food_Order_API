@@ -1,9 +1,10 @@
 package com.abhayproj.controller;
 
-import com.abhayproj.io.AuthenticationRequest;
-import com.abhayproj.io.AuthenticationResponse;
+import com.abhayproj.dto.AuthenticationRequest;
+import com.abhayproj.dto.AuthenticationResponse;
 import com.abhayproj.service.AppUserDetailsService;
 import com.abhayproj.util.JwtUtil;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api"  )
+@RequestMapping("/api")
 @AllArgsConstructor
 public class AuthController {
 
@@ -23,7 +24,7 @@ public class AuthController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    public AuthenticationResponse login(@RequestBody AuthenticationRequest request) {
+    public AuthenticationResponse login(@Valid @RequestBody AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),

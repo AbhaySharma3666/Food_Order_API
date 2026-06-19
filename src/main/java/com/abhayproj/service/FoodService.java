@@ -1,7 +1,7 @@
 package com.abhayproj.service;
 
-import com.abhayproj.io.FoodRequest;
-import com.abhayproj.io.FoodResponse;
+import com.abhayproj.dto.FoodRequest;
+import com.abhayproj.dto.FoodResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

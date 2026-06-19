@@ -1,4 +1,4 @@
-package com.abhayproj.io;
+package com.abhayproj.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserRequest {
+public class UserResponse {
+    private String id;
     private String name;
     private String email;
-    private String password;
 }
