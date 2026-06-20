@@ -2,6 +2,17 @@
 
 A Spring Boot REST API powering the **Foodies** online food delivery platform. It provides endpoints for user authentication, food catalog management, shopping cart operations, and order processing with Razorpay payment integration.
 
+## 🌐 Live Demo
+
+| Service | URL |
+| --- | --- |
+| **Backend API** | [foodies-api-0d6g.onrender.com](https://foodies-api-0d6g.onrender.com/api/health) |
+| **Customer Panel** | [foodies-panel.vercel.app](https://foodies-panel.vercel.app) |
+| **Admin Panel** | [foodies-adminpanel.vercel.app](https://foodies-adminpanel.vercel.app) |
+
+> [!NOTE]
+> The backend is hosted on Render's free tier and may take 30–60 seconds to wake up on the first request.
+
 ---
 
 ## 📋 Table of Contents
