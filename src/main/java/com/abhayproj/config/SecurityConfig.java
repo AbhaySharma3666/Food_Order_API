@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth -> auth.requestMatchers(
+                                "/api/health",
                                 "/api/register",
                                 "/api/login",
                                 "/api/foods/**",
