@@ -3,8 +3,8 @@ package com.abhayproj.controller;
 import com.abhayproj.dto.FoodRequest;
 import com.abhayproj.dto.FoodResponse;
 import com.abhayproj.service.FoodService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,7 @@ public class FoodController {
 
     @PostMapping
     public FoodResponse addFood(@RequestPart("food") String foodString,
-                                @RequestPart("file") MultipartFile file) throws JsonProcessingException {
+                                @RequestPart("file") MultipartFile file) throws JacksonException {
         FoodRequest request = objectMapper.readValue(foodString, FoodRequest.class);
         return foodService.addFood(request, file);
     }
